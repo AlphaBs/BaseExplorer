@@ -28,12 +28,18 @@ namespace BaseExplorer.Core
 
         public string GetDecodedName(string encodedName, bool isdir)
         {
-            return baseDec(encodedName.Substring(EncodeKey.Length));
+            if (isdir)
+                return baseDec(encodedName.Substring(EncodeDirKey.Length));
+            else
+                return baseDec(encodedName.Substring(EncodeKey.Length));
         }
 
         public string GetEncodedName(string decodedName, bool isdir)
         {
-            return EncodeKey + baseEnc(decodedName);
+            if (isdir)
+                return EncodeDirKey + baseEnc(decodedName);
+            else
+                return EncodeKey + baseEnc(decodedName);
         }
 
         public void DecodeFile(string parent, string name)
@@ -106,7 +112,7 @@ namespace BaseExplorer.Core
         {
             var dirIndex = dirpath.LastIndexOf(Path.DirectorySeparatorChar);
 
-            var parent = dirpath.Substring(0, dirIndex - 1);
+            var parent = dirpath.Substring(0, dirIndex);
             var name = dirpath.Substring(dirIndex + 1);
 
             return new Tuple<string, string>(parent, name);

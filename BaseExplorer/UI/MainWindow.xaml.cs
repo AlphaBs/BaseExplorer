@@ -120,7 +120,7 @@ namespace BaseExplorer.UI
             var path = Path.Combine(CurrentPath, SelectedControl.ItemName);
 
             if (SelectedControl.IsDir)
-                viewer.EncodeFile(path);
+                EncodeRev(path);
             else
                 viewer.EncodeFile(path);
 
@@ -138,11 +138,73 @@ namespace BaseExplorer.UI
             var path = Path.Combine(CurrentPath, SelectedControl.ItemName);
 
             if (SelectedControl.IsDir)
-                viewer.DecodeDir(path);
+                DecodeRev(path);
             else
                 viewer.DecodeFile(path);
 
             Navigate(CurrentPath);
+        }
+
+        void EncodeRev(string path)
+        {
+            var dirinfo = new DirectoryInfo(path);
+
+            foreach (var item in dirinfo.GetFiles())
+            {
+                if (viewer.CheckIsEncodedName(item.Name))
+                    continue;
+
+                viewer.EncodeFile(path, item.Name);
+            }
+
+            foreach (var item in dirinfo.GetDirectories())
+            {
+                if (viewer.CheckIsEncodedName(item.Name))
+                    continue;
+
+                EncodeRev(Path.Combine(path, item.Name));
+            }
+
+            viewer.EncodeDir(path);
+        }
+
+        void DecodeRev(string path)
+        {
+            var dirinfo = new DirectoryInfo(path);
+
+            foreach (var item in dirinfo.GetFiles())
+            {
+                if (!viewer.CheckIsEncodedName(item.Name))
+                    continue;
+
+                viewer.DecodeFile(path, item.Name);
+            }
+
+            foreach (var item in dirinfo.GetDirectories())
+            {
+                if (!viewer.CheckIsEncodedName(item.Name))
+                    continue;
+
+                DecodeRev(Path.Combine(path, item.Name));
+            }
+
+            viewer.DecodeDir(path);
+        }
+
+        private void btnParent_Click(object sender, RoutedEventArgs e)
+        {
+            var d = DivideDir(CurrentPath);
+            Navigate(d.Item1);
+        }
+
+        Tuple<string, string> DivideDir(string dirpath)
+        {
+            var dirIndex = dirpath.LastIndexOf(Path.DirectorySeparatorChar);
+
+            var parent = dirpath.Substring(0, dirIndex);
+            var name = dirpath.Substring(dirIndex + 1);
+
+            return new Tuple<string, string>(parent, name);
         }
 
         private void Launch(string p)
@@ -163,6 +225,8 @@ namespace BaseExplorer.UI
             {
                 File.Delete(item);
             }
+
+            MessageBox.Show("Success");
         }
     }
 }
