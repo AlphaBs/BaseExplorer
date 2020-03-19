@@ -13,6 +13,9 @@ namespace BaseExplorer.Core
         const string EncodeKey = "_b6.";
         const string EncodeDirKey = "_b6__";
 
+        const char invalidChar = '/';
+        const char replaceChar = '$';
+
         public bool CheckIsEncodedName(string filename)
         {
             return CheckIsEncodedName(filename, false) || CheckIsEncodedName(filename, true);
@@ -100,12 +103,12 @@ namespace BaseExplorer.Core
 
         string baseEnc(string input)
         {
-            return Convert.ToBase64String(DefaultEncoding.GetBytes(input));
+            return Convert.ToBase64String(DefaultEncoding.GetBytes(input)).Replace(invalidChar, replaceChar);
         }
 
         string baseDec(string input)
         {
-            return DefaultEncoding.GetString(Convert.FromBase64String(input));
+            return DefaultEncoding.GetString(Convert.FromBase64String(input.Replace(replaceChar, invalidChar)));
         }
 
         Tuple<string, string> DivideDir(string dirpath)
