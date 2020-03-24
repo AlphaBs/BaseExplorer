@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         Loaded="Window_Loaded">
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -27,13 +27,21 @@
             <Button x:Name="btnParent" HorizontalAlignment="Right" Margin="0,10,68,10" Content="Parent" Click="btnParent_Click"/>
         </Grid>
 
-        <ScrollViewer
-            x:Name="stk2"
-            Grid.Row="1">
-            <StackPanel x:Name="stkList">
-                
-            </StackPanel>
-        </ScrollViewer>
+        <DockPanel
+            Grid.Row="1"
+            LastChildFill="True">
+            <DockPanel x:Name="sideTh" Visibility="Collapsed" DockPanel.Dock="Right" Width="300" Background="LightGray">
+                <Label x:Name="sideName" Content="TEST" FontSize="16" HorizontalContentAlignment="Center" DockPanel.Dock="Top" Margin="10"/>
+                <Label x:Name="sidePath" Content="TEST" FontSize="16" HorizontalContentAlignment="Center" DockPanel.Dock="Bottom" Margin="10" VerticalContentAlignment="Bottom"/>
+                <Image x:Name="sideThumb" Margin="10" Source="/BaseExplorer;component/Resources/file.png"/>
+            </DockPanel>
+
+            <ScrollViewer>
+                <StackPanel x:Name="stkList">
+
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
 
         <StackPanel
             x:Name="stk3"
@@ -45,6 +53,7 @@
             <Button x:Name="btnEncode" Content="Encode" Margin="5" Click="btnEncode_Click"/>
             <Button x:Name="btnDecode" Content="Decode" Margin="5" Click="btnDecode_Click"/>
             <Button x:Name="btnClear" Content="Clear" Margin="5" Click="btnClear_Click"/>
+            <ComboBox x:Name="cbPreviewer" Margin="5"/>
 
             <TextBlock x:Name="tInfo" Text="Encrypting Directory Structure By Base64. ksi123456ab 2020" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 

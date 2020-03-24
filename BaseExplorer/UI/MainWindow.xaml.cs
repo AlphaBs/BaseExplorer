@@ -20,6 +20,12 @@ namespace BaseExplorer.UI
             InitializeComponent();
         }
 
+        IPreviewer[] Previewer = new IPreviewer[]
+            {
+                new ImagePreviewer()
+            };
+
+
         IViewer viewer;
         string TempPath;
         string CurrentPath = "";
@@ -68,6 +74,43 @@ namespace BaseExplorer.UI
 
             SelectedControl = (ListControl)sender;
             SelectedControl.IsChecked = true;
+
+            if (SelectedControl.IsDir)
+                return;
+
+            IPreviewer view = null;
+            var ext = Path.GetExtension(SelectedControl.DisplayName);
+
+            foreach (var item in Previewer)
+            {
+                foreach (var type in item.SupportExtensions)
+                {
+                    if (type == ext)
+                    {
+                        view = item;
+                        break;
+                    }
+                }
+            }
+
+            if (view == null)
+                sideTh.Visibility = Visibility.Collapsed;
+            else
+            {
+                var realpath = Path.Combine(CurrentPath, SelectedControl.ItemName);
+                var displaypath = Path.Combine(CurrentPath, SelectedControl.DisplayName);
+                var preview = view.GetPreview(realpath, displaypath);
+
+                if (preview == null)
+                    sideTh.Visibility = Visibility.Collapsed;
+                else
+                {
+                    sideTh.Visibility = Visibility.Visible;
+                    sideName.Content = preview.Name;
+                    sideThumb.Source = preview.PreviewImage;
+                    sidePath.Content = SelectedControl.DisplayName;
+                }
+            }
         }
 
         private void Ctrl_DoubleClick(object sender, EventArgs e)
