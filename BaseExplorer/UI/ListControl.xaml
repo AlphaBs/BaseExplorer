@@ -5,19 +5,27 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BaseExplorer.UI"
              mc:Ignorable="d" 
+             Height="50"
              d:DesignHeight="100" d:DesignWidth="800">
+
+    <Control.Resources>
+        <BitmapImage x:Key="dirB" UriSource="/BaseExplorer;component/Resources/dirblue.png"/>
+        <BitmapImage x:Key="fileB" UriSource="/BaseExplorer;component/Resources/fileblue.png"/>
+        <BitmapImage x:Key="dir" UriSource="/BaseExplorer;component/Resources/folder.png"/>
+        <BitmapImage x:Key="file" UriSource="/BaseExplorer;component/Resources/file.png"/>
+    </Control.Resources>
     
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="40"/>
             <ColumnDefinition/>
             <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
 
-        <Image x:Name="imgThumb"/>
+        <Image x:Name="imgThumb" Margin="2"/>
         <Label x:Name="lbIsDir"/>
         
-        <Label x:Name="lbItemName" Grid.Column="1"/>
+        <Label x:Name="lbItemName" Grid.Column="1" FontSize="16" FontWeight="Bold"/>
         <Label x:Name="lbDisplayName" Grid.Column="1" Margin="0,25,0,0"/>
         
         <Label x:Name="lbIsEnc" Grid.Column="2"/>

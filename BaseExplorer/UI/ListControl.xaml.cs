@@ -29,10 +29,31 @@ namespace BaseExplorer.UI
 
             InitializeComponent();
 
-            lbIsDir.Content = isdir ? "DIR" : "FILE";
-            lbItemName.Content = name;
+            //lbIsDir.Content = isdir ? "DIR" : "FILE";
+
+            if (isenc)
+            {
+                if (isdir)
+                    imgThumb.Source = g("dirB");
+                else
+                    imgThumb.Source = g("fileB");
+            }
+            else
+            {
+                if (isdir)
+                    imgThumb.Source = g("dir");
+                else
+                    imgThumb.Source = g("file");
+            }
+
             if (name != displayname)
-                lbDisplayName.Content = displayname;
+            {
+                lbItemName.Content = displayname;
+                lbDisplayName.Content = name;
+            }
+            else
+                lbItemName.Content = name;
+
             lbIsEnc.Content = isenc ? "ENC" : "";
         }
 
@@ -54,6 +75,11 @@ namespace BaseExplorer.UI
 
                 _isChecked = value;
             }
+        }
+
+        BitmapImage g(string n)
+        {
+            return (BitmapImage)FindResource(n);
         }
     }
 }
