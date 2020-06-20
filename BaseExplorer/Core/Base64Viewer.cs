@@ -48,7 +48,7 @@ namespace BaseExplorer.Core
         public void DecodeFile(string parent, string name)
         {
             var newpath = Path.Combine(parent, GetDecodedName(name, false));
-            File.Move(Path.Combine(parent, name) , newpath);
+            IOUtil.MoveFile(Path.Combine(parent, name) , newpath);
         }
 
         public void DecodeFile(string filepath)
@@ -62,7 +62,7 @@ namespace BaseExplorer.Core
         public void EncodeFile(string parent, string name)
         {
             var newpath = Path.Combine(parent, GetEncodedName(name, false));
-            File.Move(Path.Combine(parent, name), newpath);
+            IOUtil.MoveFile(Path.Combine(parent, name), newpath);
         }
 
         public void EncodeFile(string filepath)
@@ -78,7 +78,7 @@ namespace BaseExplorer.Core
             var dirpath = Path.Combine(parent, name);
             var newpath = Path.Combine(parent, GetDecodedName(name, true));
 
-            Directory.Move(dirpath, newpath);
+            IOUtil.MoveDir(dirpath, newpath);
         }
 
         public void DecodeDir(string dirpath)
@@ -92,7 +92,7 @@ namespace BaseExplorer.Core
             var dirpath = Path.Combine(parent, name);
             var newpath = Path.Combine(parent, GetEncodedName(name, true));
 
-            Directory.Move(dirpath, newpath);
+            IOUtil.MoveDir(dirpath, newpath);
         }
 
         public void EncodeDir(string dirpath)
