@@ -69,6 +69,7 @@
     </Compile>
     <Compile Include="Core\Base64Viewer.cs" />
     <Compile Include="Core\ImagePreviewer.cs" />
+    <Compile Include="Core\IOUtil.cs" />
     <Compile Include="Core\IPreviewer.cs" />
     <Compile Include="Core\IViewer.cs" />
     <Compile Include="Core\PreviewData.cs" />

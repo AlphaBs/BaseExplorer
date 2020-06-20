@@ -54,8 +54,9 @@
             <Button x:Name="btnDecode" Content="Decode" Margin="5" Click="btnDecode_Click"/>
             <Button x:Name="btnClear" Content="Clear" Margin="5" Click="btnClear_Click"/>
             <ComboBox x:Name="cbPreviewer" Margin="5"/>
+            <CheckBox x:Name="cbShowPreview" Content="Preview" IsChecked="True" FontSize="16" Margin="5" VerticalAlignment="Center" Checked="cbShowPreview_Checked" Unchecked="cbShowPreview_Unchecked"/>
 
-            <TextBlock x:Name="tInfo" Text="Encrypting Directory Structure By Base64. ksi123456ab 2020" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock x:Name="tInfo" Foreground="Gray" Text="Encrypting Directory Structure By Base64. ksi123456ab 2020" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
         </StackPanel>
     </Grid>

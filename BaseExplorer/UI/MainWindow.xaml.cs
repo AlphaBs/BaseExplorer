@@ -1,8 +1,8 @@
 ﻿using BaseExplorer.Core;
 using System;
-using System.Windows;
 using System.IO;
 using System.Linq;
+using System.Windows;
 
 namespace BaseExplorer.UI
 {
@@ -30,6 +30,7 @@ namespace BaseExplorer.UI
         string TempPath;
         string CurrentPath = "";
         ListControl SelectedControl;
+        bool ShowPreview = true;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -38,21 +39,29 @@ namespace BaseExplorer.UI
 
         void Navigate(string path)
         {
-            stkList.Children.Clear();
-            SelectedControl = null;
-
-            var dirinfo = new DirectoryInfo(path);
-            foreach (var item in dirinfo.GetDirectories())
+            try
             {
-                AddCtrl(item.Name, true);
-            }
-            foreach (var item in dirinfo.GetFiles())
-            {
-                AddCtrl(item.Name, false);
-            }
+                sideTh.Visibility = Visibility.Collapsed;
+                stkList.Children.Clear();
+                SelectedControl = null;
 
-            CurrentPath = path;
-            txtPath.Text = path;
+                var dirinfo = new DirectoryInfo(path);
+                foreach (var item in dirinfo.GetDirectories())
+                {
+                    AddCtrl(item.Name, true);
+                }
+                foreach (var item in dirinfo.GetFiles())
+                {
+                    AddCtrl(item.Name, false);
+                }
+
+                CurrentPath = path;
+                txtPath.Text = path;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         void AddCtrl(string name, bool isdir)
@@ -75,41 +84,58 @@ namespace BaseExplorer.UI
             SelectedControl = (ListControl)sender;
             SelectedControl.IsChecked = true;
 
+            ShowPreviewContent();
+        }
+
+        private void ShowPreviewContent()
+        {
+            if (!ShowPreview)
+                return;
+            if (SelectedControl == null)
+                return;
+
             if (SelectedControl.IsDir)
                 return;
 
-            IPreviewer view = null;
-            var ext = Path.GetExtension(SelectedControl.DisplayName);
-
-            foreach (var item in Previewer)
+            try
             {
-                foreach (var type in item.SupportExtensions)
+                IPreviewer view = null;
+                var ext = Path.GetExtension(SelectedControl.DisplayName);
+
+                foreach (var item in Previewer)
                 {
-                    if (type == ext)
+                    foreach (var type in item.SupportExtensions)
                     {
-                        view = item;
-                        break;
+                        if (type == ext)
+                        {
+                            view = item;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (view == null)
-                sideTh.Visibility = Visibility.Collapsed;
-            else
-            {
-                var realpath = Path.Combine(CurrentPath, SelectedControl.ItemName);
-                var displaypath = Path.Combine(CurrentPath, SelectedControl.DisplayName);
-                var preview = view.GetPreview(realpath, displaypath);
-
-                if (preview == null)
+                if (view == null)
                     sideTh.Visibility = Visibility.Collapsed;
                 else
                 {
-                    sideTh.Visibility = Visibility.Visible;
-                    sideName.Content = preview.Name;
-                    sideThumb.Source = preview.PreviewImage;
-                    sidePath.Content = SelectedControl.DisplayName;
+                    var realpath = Path.Combine(CurrentPath, SelectedControl.ItemName);
+                    var displaypath = Path.Combine(CurrentPath, SelectedControl.DisplayName);
+                    var preview = view.GetPreview(realpath, displaypath);
+
+                    if (preview == null)
+                        sideTh.Visibility = Visibility.Collapsed;
+                    else
+                    {
+                        sideTh.Visibility = Visibility.Visible;
+                        sideName.Content = preview.Name;
+                        sideThumb.Source = preview.PreviewImage;
+                        sidePath.Content = SelectedControl.DisplayName;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
 
@@ -129,7 +155,7 @@ namespace BaseExplorer.UI
                     var ext = SelectedControl.DisplayName.Split('.').Last();
                     var newpath = Path.Combine(TempPath, "_." + ext);
 
-                    File.Copy(orgpath, newpath);
+                    File.Copy(orgpath, newpath, true);
                     Launch(newpath);
                 }
                 else
@@ -160,12 +186,19 @@ namespace BaseExplorer.UI
             if (SelectedControl.IsEnc)
                 return;
 
-            var path = Path.Combine(CurrentPath, SelectedControl.ItemName);
+            try
+            {
+                var path = Path.Combine(CurrentPath, SelectedControl.ItemName);
 
-            if (SelectedControl.IsDir)
-                EncodeRev(path);
-            else
-                viewer.EncodeFile(path);
+                if (SelectedControl.IsDir)
+                    EncodeRev(path);
+                else
+                    viewer.EncodeFile(path);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
 
             Navigate(CurrentPath);
         }
@@ -178,12 +211,19 @@ namespace BaseExplorer.UI
             if (!SelectedControl.IsEnc)
                 return;
 
-            var path = Path.Combine(CurrentPath, SelectedControl.ItemName);
+            try
+            {
+                var path = Path.Combine(CurrentPath, SelectedControl.ItemName);
 
-            if (SelectedControl.IsDir)
-                DecodeRev(path);
-            else
-                viewer.DecodeFile(path);
+                if (SelectedControl.IsDir)
+                    DecodeRev(path);
+                else
+                    viewer.DecodeFile(path);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
 
             Navigate(CurrentPath);
         }
@@ -270,6 +310,18 @@ namespace BaseExplorer.UI
             }
 
             MessageBox.Show("Success");
+        }
+
+        private void cbShowPreview_Checked(object sender, RoutedEventArgs e)
+        {
+            ShowPreview = true;
+            ShowPreviewContent();
+        }
+
+        private void cbShowPreview_Unchecked(object sender, RoutedEventArgs e)
+        {
+            ShowPreview = false;
+            sideTh.Visibility = Visibility.Collapsed;
         }
     }
 }
